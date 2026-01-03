@@ -11,11 +11,12 @@ import bcrypt
 import jwt
 from datetime import datetime, timedelta
 from functools import wraps
+from model.aodnet import AODNet
+from model.aqi_regressor import AQIRegressor
 
 # --- Import AI Models & Utils ---
 try:
-    from model.aodnet import AODNet
-    from model.aqi_regressor import AQIRegressor
+    
     from utils.image_checks import is_day_image
     from utils.preprocess import preprocess
     from utils.features import extract_haze_features
@@ -46,34 +47,25 @@ except Exception as e:
     db = None
     users_collection = None
 
-# --- Load AI Models ---
-device = "cuda" if torch.cuda.is_available() else "cpu"
-aod_model = None
-aqi_model = None
+# --- Load Model & Statistics ---
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-def load_models():
-    global aod_model, aqi_model
-    try:
-        print(f"🔄 Loading AI models on {device}...")
+# Load Models
+aod_model = AODNet().to(device)
+aod_model.load_state_dict(torch.load("model/aodnet.pth", map_location=device))
+aod_model.eval()
 
-        # Load AODNet
-        aod = AODNet().to(device)
-        aod.load_state_dict(torch.load("model/aodnet.pth", map_location=device))
-        aod.eval()
-        aod_model = aod
-        print("✅ AODNet loaded.")
+aqi_model = AQIRegressor().to(device)
+aqi_model.load_state_dict(torch.load("model/aqi_regressor.pth", map_location=device))
+aqi_model.eval()
 
-        # Load AQI Regressor
-        aqi = AQIRegressor().to(device)
-        aqi.load_state_dict(torch.load("model/aqi_regressor.pth", map_location=device))
-        aqi.eval()
-        aqi_model = aqi
-        print("✅ AQI Regressor loaded.")
+# --- Training Statistics from haze_aqi_dataset.csv ---
+# Order: [mean_haze, std_haze, max_haze, min_haze]
+train_mean = torch.tensor([1.552576, 0.142549, 1.931332, 0.995442], device=device).float()
+train_std = torch.tensor([0.116868, 0.037032, 0.063219, 0.076424], device=device).float()
 
-    except Exception as e:
-        print(f"⚠️ Error loading AI models: {e}")
 
-load_models()
+
 
 # --- Auth Decorator ---
 def token_required(f):
@@ -219,87 +211,82 @@ def verify_token(current_user):
 # --- Analysis Endpoint ---
 
 
+train_mean = torch.tensor([1.552576, 0.142549, 1.931332, 0.995442], device=device)
+train_std = torch.tensor([0.116868, 0.037032, 0.063219, 0.076424], device=device)
 
 @app.route('/api/analyze', methods=['POST'])
 def analyze_image():
     if not aod_model or not aqi_model:
         return jsonify({'error': 'AI models not loaded'}), 503
 
-    if 'image' not in request.files:
-        return jsonify({'error': 'No image file provided'}), 400
+    file = request.files.get('image')
+    if not file or file.filename == '':
+        return jsonify({'error': 'No image provided'}), 400
 
-    file = request.files['image']
-    if file.filename == '':
-        return jsonify({'error': 'No selected file'}), 400
+    filepath = os.path.join(UPLOAD_FOLDER, f"temp_{datetime.now().timestamp()}.jpg")
+    file.save(filepath)
 
     try:
-        # Save temp file
-        filename = f"temp_{datetime.now().timestamp()}.jpg"
-        filepath = os.path.join(UPLOAD_FOLDER, filename)
-        file.save(filepath)
-
+        # 1. Load and Quality Check
         img = cv2.imread(filepath)
-        if img is None:
-            os.remove(filepath)
-            return jsonify({'error': 'Invalid image'}), 400
-
-        # Day/Night Check
         if not is_day_image(img):
             os.remove(filepath)
-            return jsonify({
-                'error': 'Night image detected. Please upload a daytime image.'
-            }), 400
+            return jsonify({'error': 'Night image detected. Use a day image.'}), 400
 
-        # 🔧 FIX 1: Proper preprocessing (RGB handled in preprocess.py)
+        # 2. Preprocess to Tensor
         tensor_img = preprocess(img, device)
 
         with torch.no_grad():
-            # AODNet inference
             _, K = aod_model(tensor_img)
 
-            # 🔧 FIX 2: Correct feature extraction
-            features = extract_haze_features(tensor_img, K)
-
-            # 🔧 FIX 3: Feature normalization
-            features = (features - features.mean()) / (features.std() + 1e-6)
-
-            # 🔧 FIX 4: Safe AQI prediction with sigmoid scaling
-            raw_output = aqi_model(features.unsqueeze(0))
-            estimated_aqi = torch.sigmoid(raw_output).item() * 500
-
-            # 🔧 FIX 5: Hard clamp for safety
-            estimated_aqi = max(0, min(500, estimated_aqi))
+            # Extract features from K
+            m_h = torch.mean(K).item()
+            s_h = torch.std(K).item()
+            ma_h = torch.max(K).item()
+            mi_h = torch.min(K).item()
             
-            print("Features:", features.tolist())
-            print("AQI output:", estimated_aqi)
+            raw_features = torch.tensor([[m_h, s_h, ma_h, mi_h]], dtype=torch.float32).to(device)
 
-        os.remove(filepath)
+            # Use the EXACT stats from your haze_aqi_dataset.csv
+           
 
-        # AQI Category
-        if estimated_aqi <= 50:
-            category = "Good"
-        elif estimated_aqi <= 100:
-            category = "Moderate"
-        elif estimated_aqi <= 150:
-            category = "Unhealthy for Sensitive Groups"
-        elif estimated_aqi <= 200:
-            category = "Unhealthy"
-        elif estimated_aqi <= 300:
-            category = "Very Unhealthy"
-        else:
-            category = "Hazardous"
+            norm_features = (raw_features - train_mean) / (train_std + 1e-6)
+            output = aqi_model(norm_features)
+            pred_norm = output.item()
+            
+            # --- THE CRITICAL FIX ---
+            # Multiply the 0-1 output by 500 to get the real AQI
+            estimated_aqi = pred_norm * 500.0
+            # ------------------------
+
+            # Clamp for safety
+            estimated_aqi = max(0, min(500, estimated_aqi))
+            # Predict
+            
+
+            
+        # Cleanup
+        if os.path.exists(filepath):
+            os.remove(filepath)
+
+        # 7. Category Logic
+        category = "Good"
+        if estimated_aqi > 300: category = "Hazardous"
+        elif estimated_aqi > 200: category = "Very Unhealthy"
+        elif estimated_aqi > 150: category = "Unhealthy"
+        elif estimated_aqi > 100: category = "Unhealthy for Sensitive Groups"
+        elif estimated_aqi > 50: category = "Moderate"
 
         return jsonify({
             'status': 'success',
             'aqi': round(estimated_aqi, 2),
-            'category': category,
-            'message': 'Analysis completed successfully'
+            'category': category
         })
 
     except Exception as e:
-        print(f"Analysis error: {e}")
+        if os.path.exists(filepath): os.remove(filepath)
+        print(f"Error: {e}")
         return jsonify({'error': 'Analysis failed'}), 500
-
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
     debug = os.getenv('FLASK_DEBUG', 'true').lower() == 'true'
