@@ -15,33 +15,55 @@ export default function Analyze() {
     if (!file) return;
 
     setAnalyzing(true);
-    
-    // Simulate AI processing delay
-    await new Promise(resolve => setTimeout(resolve, 2500));
-    
-    // Generate mock results
-    const mockResult = {
-      id: Math.random().toString(36).substr(2, 9),
-      aqi: Math.floor(Math.random() * 200) + 20, // Random 20-220
-      hazeLevel: ["Low", "Medium", "High"][Math.floor(Math.random() * 3)],
-      createdAt: new Date().toISOString(),
-      // In a real app we'd upload this. Here we pass the object URL via state/context, 
-      // but since we navigate away, we'll just mock the image in the results page 
-      // or use a temporary specialized context. 
-      // For simplicity in this demo, we'll store a "temp_result" in localStorage
-    };
 
-    // Store current result for the results page
-    localStorage.setItem("visionaq_current_result", JSON.stringify({
-      ...mockResult,
-      tempImageUrl: URL.createObjectURL(file) // Note: ObjectURLs revoke on page reload, works for SPA navigation
-    }));
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
 
-    // Add to history
-    setHistory([mockResult, ...history]);
-    
-    setAnalyzing(false);
-    setLocation("/results");
+      // Use a relative path if proxy is set up or absolute localhost URL
+      // Assuming Vite proxy or CORS allows localhost:5000
+      const response = await fetch("http://localhost:5000/api/analyze", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Analysis failed");
+      }
+
+      const getHazeLevel = (aqi: number) => {
+        if (aqi <= 50) return "Low";
+        if (aqi <= 150) return "Medium";
+        return "High";
+      };
+
+      const result = {
+        id: Math.random().toString(36).substr(2, 9),
+        aqi: data.aqi,
+        category: data.category,
+        hazeLevel: getHazeLevel(data.aqi),
+        createdAt: new Date().toISOString(),
+      };
+
+      // Store current result for the results page
+      localStorage.setItem("visionaq_current_result", JSON.stringify({
+        ...result,
+        tempImageUrl: URL.createObjectURL(file)
+      }));
+
+      // Add to history
+      setHistory([result, ...history]);
+
+      setLocation("/results");
+
+    } catch (error) {
+      console.error("Analysis Error:", error);
+      alert(error instanceof Error ? error.message : "Failed to analyze image");
+    } finally {
+      setAnalyzing(false);
+    }
   };
 
   return (
@@ -51,14 +73,14 @@ export default function Analyze() {
           Analyze Air Quality
         </h1>
         <p className="text-muted-foreground max-w-lg mx-auto">
-          Upload a clear photo of the sky or horizon. Our AI will analyze haze levels, 
+          Upload a clear photo of the sky or horizon. Our AI will analyze haze levels,
           visibility, and color distribution to estimate the Air Quality Index.
         </p>
       </div>
 
       <div className="bg-white rounded-[2rem] p-8 shadow-xl shadow-primary/5 border border-white/50 relative overflow-hidden">
         {analyzing && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="absolute inset-0 z-50 bg-white/90 backdrop-blur-md flex flex-col items-center justify-center"
@@ -76,10 +98,10 @@ export default function Analyze() {
           </motion.div>
         )}
 
-        <UploadZone 
-          onFileSelect={setFile} 
-          selectedFile={file} 
-          onClear={() => setFile(null)} 
+        <UploadZone
+          onFileSelect={setFile}
+          selectedFile={file}
+          onClear={() => setFile(null)}
         />
 
         <div className="mt-8 flex justify-center">
@@ -89,8 +111,8 @@ export default function Analyze() {
             className={`
               px-8 py-4 rounded-full font-bold text-lg flex items-center gap-2
               transition-all duration-300 shadow-lg
-              ${!file 
-                ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
+              ${!file
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                 : "bg-primary text-white hover:bg-primary/90 hover:shadow-primary/30 hover:-translate-y-1"
               }
             `}
@@ -100,7 +122,7 @@ export default function Analyze() {
           </button>
         </div>
       </div>
-      
+
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
         {[
           { title: "Smart Detection", desc: "Identifies sky regions automatically" },
@@ -108,8 +130,8 @@ export default function Analyze() {
           { title: "Instant Results", desc: "Get AQI estimates in seconds" }
         ].map((item, i) => (
           <div key={i} className="p-4 rounded-2xl bg-white/50 border border-border">
-             <h4 className="font-bold text-foreground mb-1">{item.title}</h4>
-             <p className="text-sm text-muted-foreground">{item.desc}</p>
+            <h4 className="font-bold text-foreground mb-1">{item.title}</h4>
+            <p className="text-sm text-muted-foreground">{item.desc}</p>
           </div>
         ))}
       </div>

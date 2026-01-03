@@ -19,3 +19,10 @@ def get_image_stats(img):
         "blur_score": blur_score,
         "is_poor_exposure": dark_ratio > 0.4 or bright_ratio > 0.4
     }
+
+def is_day_image(img):
+    """
+    Directly returns boolean for day/night check.
+    """
+    stats = get_image_stats(img)
+    return stats["is_day"]
