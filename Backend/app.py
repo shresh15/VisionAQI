@@ -206,3 +206,58 @@ if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
     debug = os.getenv('FLASK_DEBUG', 'true').lower() == 'true'
     app.run(host='0.0.0.0', port=port, debug=debug)
+
+
+
+from flask import Flask, request, render_template
+import cv2
+import torch
+import os
+
+from models.aodnet import AODNet
+from models.aqi_regressor import AQIRegressor
+from utils.image_checks import is_day_image
+from utils.preprocessing import preprocess
+from utils.features import extract_haze_features
+
+app = Flask(__name__)
+UPLOAD_FOLDER = "static/uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+
+# Load models
+aod = AODNet().to(device)
+aod.load_state_dict(torch.load("models/aodnet.pth", map_location=device))
+aod.eval()
+
+aqi_model = AQIRegressor().to(device)
+aqi_model.load_state_dict(torch.load("models/aqi_cnn.pth", map_location=device))
+aqi_model.eval()
+
+@app.route("/", methods=["GET", "POST"])
+def index():
+    if request.method == "POST":
+        file = request.files["image"]
+        path = os.path.join(UPLOAD_FOLDER, file.filename)
+        file.save(path)
+
+        img = cv2.imread(path)
+
+        if not is_day_image(img):
+            return "❌ Rejected: Night / Dark image"
+
+        tensor = preprocess(img, device)
+
+        with torch.no_grad():
+            _, K = aod(tensor)
+            features = extract_haze_features(K)
+            pred_norm = aqi_model(features.unsqueeze(0)).item()
+
+        aqi = pred_norm * 500.0
+        return f"Estimated AQI: {aqi:.2f}"
+
+    return render_template("index.html")
+
+if __name__ == "__main__":
+    app.run(debug=True)
