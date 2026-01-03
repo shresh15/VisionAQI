@@ -1,10 +1,10 @@
-import { Switch, Route, useLocation } from "wouter";
+import { Switch, Route, useLocation, Redirect } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "./components/ui/toaster";
 import { Navigation } from "./components/Navigation";
 import { useEffect } from "react";
-import { useAuth } from "./hooks/use-auth";
+import { useAuth, AuthProvider } from "./hooks/use-auth";
 
 // Pages
 import Landing from "./pages/Landing";
@@ -18,14 +18,22 @@ import NotFound from "./pages/not-found";
 
 // Protected Route Wrapper
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
   const [, setLocation] = useLocation();
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!loading && !isAuthenticated) {
       setLocation("/auth");
     }
-  }, [isAuthenticated, setLocation]);
+  }, [isAuthenticated, loading, setLocation]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (!isAuthenticated) return null;
   return <Component />;
@@ -33,6 +41,7 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
 
 function Router() {
   const [location] = useLocation();
+  const { isAuthenticated, loading } = useAuth();
   const isHomeOrAuth = location === "/" || location === "/auth";
 
   return (
@@ -41,7 +50,9 @@ function Router() {
       <div className={`flex-1 ${!isHomeOrAuth ? "pt-16" : ""}`}>
         <Switch>
           <Route path="/" component={Landing} />
-          <Route path="/auth" component={Auth} />
+          <Route path="/auth">
+            {!loading && isAuthenticated ? <Redirect to="/dashboard" /> : <Auth />}
+          </Route>
           <Route path="/how-it-works" component={HowItWorks} />
 
           {/* Protected Routes */}
@@ -74,7 +85,9 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Toaster />
-      <Router />
+      <AuthProvider>
+        <Router />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
