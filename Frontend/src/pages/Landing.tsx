@@ -187,7 +187,7 @@ export default function Landing() {
                 className="text-6xl md:text-8xl font-display font-black tracking-tight leading-[0.95] mb-8"
               >
                 <span className="block text-slate-900">Breathe</span>
-                <span className="block relative inline-block">
+                <span className="relative inline-block">
                   <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-500 to-sky-500 animate-gradient-x text-glow">
                     Better.
                   </span>
