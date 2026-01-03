@@ -5,7 +5,7 @@ import { Wind, ArrowRight, Mail, Lock, User } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Auth() {
-  const { login } = useAuth();
+  const { login, signup } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -20,8 +20,12 @@ export default function Auth() {
 
     setLoading(true);
 
-    // For both login and signup, we use the same login function (mock auth)
-    await login(email);
+    // For both login and signup, we use the respective functions from useAuth
+    if (isLogin) {
+      await login(email, password);
+    } else {
+      await signup(name, email, password);
+    }
 
     setLoading(false);
   };

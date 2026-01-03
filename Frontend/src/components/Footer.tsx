@@ -25,7 +25,7 @@ export function Footer() {
               <span className="bg-primary/10 p-2 rounded-xl">
                 <Wind className="h-6 w-6" />
               </span>
-              VisionAQ
+              VisionAQI
             </div>
             <p className="mt-4 text-sm text-muted-foreground max-w-sm">
               AI-powered air quality awareness for smarter, healthier cities.
@@ -72,7 +72,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-border pt-6 text-center text-sm text-muted-foreground">
-          <p>© 2026 VisionAQ. Built for Smart Cities & Public Health.</p>
+          <p>© 2026 VisionAQI. Built for Smart Cities & Public Health.</p>
         </div>
       </div>
     </footer>

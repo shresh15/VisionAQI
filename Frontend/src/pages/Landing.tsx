@@ -114,7 +114,7 @@ export default function Landing() {
                     </div>
                   </div>
                   <span className="text-2xl font-display font-black bg-gradient-to-r from-primary via-teal-600 to-emerald-600 bg-clip-text text-transparent">
-                    VisionAQ
+                    VisionAQI
                   </span>
                 </motion.div>
               </Link>
@@ -143,7 +143,7 @@ export default function Landing() {
                 >
                   <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                   <span className="relative flex items-center gap-2">
-                    Get Started
+                    Sign Up/ Sign In
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </span>
                 </motion.button>
@@ -173,11 +173,11 @@ export default function Landing() {
                   transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                   className="flex"
                 >
-                  <Sparkles className="w-4 h-4 text-emerald-600" />
+                  {/* <Sparkles className="w-4 h-4 text-emerald-600" /> */}
                 </motion.span>
-                <span className="text-sm font-bold bg-gradient-to-r from-emerald-700 to-teal-700 bg-clip-text text-transparent">
+                {/* <span className="text-sm font-bold bg-gradient-to-r from-emerald-700 to-teal-700 bg-clip-text text-transparent">
                   AI-Powered Environmental Intelligence
-                </span>
+                </span> */}
               </motion.div>
 
               <motion.h1
@@ -279,9 +279,9 @@ export default function Landing() {
                       </motion.span>
                     ))}
                   </div>
-                  <p className="text-sm font-semibold text-slate-700">
+                  {/* <p className="text-sm font-semibold text-slate-700">
                     Trusted by <span className="text-primary">15,000+</span> users worldwide
-                  </p>
+                  </p> */}
                 </div>
               </motion.div>
             </motion.div>
@@ -349,11 +349,11 @@ export default function Landing() {
                 >
                   <div className="flex items-center gap-3 mb-2">
                     <div className="p-2 bg-blue-100 rounded-xl">
-                      <Zap className="w-5 h-5 text-blue-600" />
+                      {/* <Zap className="w-5 h-5 text-blue-600" /> */}
                     </div>
                     <span className="font-bold text-slate-900">Instant Analysis</span>
                   </div>
-                  <p className="text-sm text-slate-600">Results in &lt;2 seconds</p>
+                  <p className="text-sm text-slate-600">Results in &lt;30 seconds</p>
                 </motion.div>
 
                 <motion.div
@@ -481,7 +481,7 @@ export default function Landing() {
               <h2 className="text-5xl md:text-6xl font-display font-black mb-12">
                 Traditional vs. <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">
-                  VisionAQ
+                  VisionAQI
                 </span>
               </h2>
 
@@ -501,7 +501,7 @@ export default function Landing() {
                       <h4 className="font-bold mb-2 text-slate-300 text-3xl">Uses physical air quality sensors</h4>
                       <h4 className="font-bold mb-2 text-slate-300 text-3xl">Measures pollutants like PM2.5, PM10, NO₂, SO₂</h4>
                       <h4 className="font-bold mb-2 text-slate-300 text-3xl">Sensors are installed at fixed locations</h4>
-                                          </div>
+                    </div>
                   </div>
                 </motion.div>
 
@@ -522,9 +522,9 @@ export default function Landing() {
                       <CheckCircle2 className="w-6 h-6 text-emerald-300" />
                     </div>
                     <div>
-                   <h4 className="font-bold mb-2 text-slate-300 text-3xl">Applies computer vision + atmospheric physics</h4>
-                   <h4 className="font-bold mb-2 text-slate-300 text-3xl">Analyzes haze, contrast loss, and light scattering</h4>
-                   <h4 className="font-bold mb-2 text-slate-300 text-3xl">Estimates PM2.5 & AQI using AI models</h4>
+                      <h4 className="font-bold mb-2 text-slate-300 text-3xl">Applies computer vision + atmospheric physics</h4>
+                      <h4 className="font-bold mb-2 text-slate-300 text-3xl">Analyzes haze, contrast loss, and light scattering</h4>
+                      <h4 className="font-bold mb-2 text-slate-300 text-3xl">Estimates PM2.5 & AQI using AI models</h4>
                     </div>
                   </div>
                 </motion.div>
@@ -549,7 +549,7 @@ export default function Landing() {
         </div>
       </section>
 
-      
+
 
     </div>
   );
