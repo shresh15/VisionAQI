@@ -5,6 +5,7 @@ import { Toaster } from "./components/ui/toaster";
 import { Navigation } from "./components/Navigation";
 import { useEffect } from "react";
 import { useAuth } from "./hooks/use-auth";
+import { Footer } from "./components/Footer";
 
 // Pages
 import Landing from "./pages/Landing";
@@ -62,10 +63,7 @@ function Router() {
         </Switch>
       </div>
 
-      {/* Footer for all pages except Auth/Landing might be nicer here, but keeping it simple */}
-      <footer className="py-8 text-center text-sm text-muted-foreground border-t border-border mt-auto">
-        <p>© 2024 VisionAQ. AI-Powered Air Quality Monitoring.</p>
-      </footer>
+      <Footer />
     </div>
   );
 }

@@ -498,9 +498,10 @@ export default function Landing() {
                       <MapPin className="w-5 h-5 text-red-400" />
                     </div>
                     <div>
-                      <h4 className="font-bold mb-2 text-red-400">Limited Coverage</h4>
-                      <p className="text-slate-400 text-sm">Traditional sensors cover less than 1% of populated areas globally.</p>
-                    </div>
+                      <h4 className="font-bold mb-2 text-slate-300 text-3xl">Uses physical air quality sensors</h4>
+                      <h4 className="font-bold mb-2 text-slate-300 text-3xl">Measures pollutants like PM2.5, PM10, NO₂, SO₂</h4>
+                      <h4 className="font-bold mb-2 text-slate-300 text-3xl">Sensors are installed at fixed locations</h4>
+                                          </div>
                   </div>
                 </motion.div>
 
@@ -521,8 +522,9 @@ export default function Landing() {
                       <CheckCircle2 className="w-6 h-6 text-emerald-300" />
                     </div>
                     <div>
-                      <h4 className="font-bold mb-2 text-xl text-emerald-300">Universal Access</h4>
-                      <p className="text-slate-300">VisionAQ works anywhere with a camera. Instant, scalable, and accessible to everyone.</p>
+                   <h4 className="font-bold mb-2 text-slate-300 text-3xl">Applies computer vision + atmospheric physics</h4>
+                   <h4 className="font-bold mb-2 text-slate-300 text-3xl">Analyzes haze, contrast loss, and light scattering</h4>
+                   <h4 className="font-bold mb-2 text-slate-300 text-3xl">Estimates PM2.5 & AQI using AI models</h4>
                     </div>
                   </div>
                 </motion.div>
@@ -538,84 +540,17 @@ export default function Landing() {
             >
               <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-3xl blur-3xl opacity-20" />
               <img
-                src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&q=80"
-                alt="Global network"
-                className="relative rounded-3xl shadow-2xl border-4 border-white/10"
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQTp--8sXvwqY7bKAkE2FYs4txcP4sloXqWA&s"
+                alt="Air Quality Index Map"
+                className="relative w-full h-auto max-h-[500px] object-contain rounded-3xl shadow-2xl border-4 border-white/10"
               />
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="relative py-40 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary via-emerald-600 to-teal-500">
-          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
-        </div>
+      
 
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="relative z-10 max-w-5xl mx-auto px-6 text-center text-white"
-        >
-          <motion.h2
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="text-6xl md:text-7xl font-display font-black mb-8 leading-tight"
-          >
-            Ready to see the <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-orange-200">
-              invisible?
-            </span>
-          </motion.h2>
-          <p className="text-2xl text-emerald-50 mb-12 max-w-3xl mx-auto font-light">
-            Join thousands making a difference. Start monitoring air quality today with just your phone.
-          </p>
-          <Link href="/auth">
-            <motion.button
-              whileHover={{ scale: 1.05, y: -5 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-12 py-6 bg-white text-primary font-black text-xl rounded-2xl shadow-2xl hover:shadow-white/20 transition-all"
-            >
-              Get Started Free →
-            </motion.button>
-          </Link>
-        </motion.div>
-      </section>
-
-      {/* Footer */}
-      <footer id="contact" className="relative py-16 bg-slate-900 text-white border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-br from-primary to-teal-400 rounded-xl">
-                <Wind className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-2xl font-display font-black">VisionAQ</span>
-            </div>
-
-            <div className="flex gap-6">
-              {[Github, Linkedin, Instagram].map((Icon, i) => (
-                <motion.a
-                  key={i}
-                  href="#"
-                  whileHover={{ scale: 1.2, y: -2 }}
-                  className="p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-colors"
-                >
-                  <Icon className="w-5 h-5" />
-                </motion.a>
-              ))}
-            </div>
-
-            <p className="text-sm text-slate-400">
-              © 2026 VisionAQ. Breathing better, together.
-            </p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
