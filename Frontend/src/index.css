@@ -1,68 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  /* Nature/Eco Palette - Fresh Greens & Clean Blues */
+  --background: 210 20% 98%;    /* Soft off-white */
+  --foreground: 215 25% 27%;    /* Dark slate blue-grey */
+  
+  --primary: 158 55% 35%;       /* Deep Forest Green */
+  --primary-foreground: 145 60% 96%;
+  
+  --secondary: 195 50% 90%;     /* Sky Blue Mist */
+  --secondary-foreground: 200 60% 30%;
+  
+  --muted: 120 20% 95%;         /* Very light green tint */
+  --muted-foreground: 215 15% 50%;
+  
+  --accent: 175 60% 45%;        /* Teal Accent */
+  --accent-foreground: 0 0% 100%;
+  
+  --destructive: 0 70% 60%;
+  --destructive-foreground: 0 0% 100%;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  --border: 215 15% 90%;
+  --input: 215 15% 90%;
+  --ring: 158 55% 35%;
+  
+  --card: 0 0% 100%;
+  --card-foreground: 215 25% 27%;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  --radius: 1rem;
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  --font-display: 'Quicksand', sans-serif;
+  --font-body: 'Nunito', sans-serif;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+@layer base {
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-primary/20;
+    font-family: var(--font-body);
   }
-  a:hover {
-    color: #747bff;
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    @apply font-bold tracking-tight text-primary-foreground/90 mix-blend-difference;
+    /* Reset mix-blend for standard usage, override in specific components if needed */
+    @apply text-foreground; 
   }
-  button {
-    background-color: #f9f9f9;
+}
+
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
+  
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-md border border-white/40 shadow-xl shadow-primary/5;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-secondary-foreground;
+  }
+}
+
+/* Animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
 }
