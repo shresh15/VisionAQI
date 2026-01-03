@@ -53,9 +53,7 @@
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
-    @apply font-bold tracking-tight text-primary-foreground/90 mix-blend-difference;
-    /* Reset mix-blend for standard usage, override in specific components if needed */
-    @apply text-foreground; 
+    @apply font-bold tracking-tight text-foreground;
   }
 }
 

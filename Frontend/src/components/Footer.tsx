@@ -71,9 +71,9 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-border pt-6 text-center text-sm text-muted-foreground">
+        {/* <div className="border-t border-border pt-6 text-center text-sm text-muted-foreground">
           <p>© 2026 VisionAQI. Built for Smart Cities & Public Health.</p>
-        </div>
+        </div> */}
       </div>
     </footer>
   );

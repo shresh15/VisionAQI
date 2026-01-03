@@ -2,9 +2,6 @@ import { Link } from "wouter";
 import {
   ArrowRight,
   Wind,
-  Zap,
-  Globe,
-  Users,
   MapPin,
   Github,
   Linkedin,
@@ -162,39 +159,21 @@ export default function Landing() {
               style={{ y, opacity }}
               className="relative z-10"
             >
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6 }}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200/50 shadow-lg shadow-emerald-100/50 mb-8"
-              >
-                <motion.span
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                  className="flex"
-                >
-                  {/* <Sparkles className="w-4 h-4 text-emerald-600" /> */}
-                </motion.span>
-                {/* <span className="text-sm font-bold bg-gradient-to-r from-emerald-700 to-teal-700 bg-clip-text text-transparent">
-                  AI-Powered Environmental Intelligence
-                </span> */}
-              </motion.div>
-
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.8 }}
-                className="text-6xl md:text-8xl font-display font-black tracking-tight leading-[0.95] mb-8"
+                className="text-6xl md:text-8xl font-display font-black tracking-tighter leading-[0.9] mb-8"
               >
-                <span className="block text-slate-900">Breathe</span>
-                <span className="relative inline-block">
-                  <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-500 to-sky-500 animate-gradient-x text-glow">
+                <span className="block text-slate-900 drop-shadow-sm">Breathe</span>
+                <span className="relative inline-block mt-2">
+                  <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-400 to-sky-500 animate-gradient-x text-glow-xl filter drop-shadow-2xl brightness-110">
                     Better.
                   </span>
                   <motion.span
-                    animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="absolute inset-0 blur-2xl bg-gradient-to-r from-emerald-400 to-teal-400 -z-10"
+                    animate={{ scale: [1, 1.1, 1], opacity: [0.4, 0.7, 0.4] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute inset-0 blur-3xl bg-gradient-to-r from-emerald-400/60 to-teal-400/60 -z-10 rounded-full"
                   />
                 </span>
               </motion.h1>
@@ -244,46 +223,6 @@ export default function Landing() {
                 </Link>
               </motion.div>
 
-              {/* Social Proof */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.8 }}
-                className="flex items-center gap-6"
-              >
-                <div className="flex -space-x-4">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ delay: 0.8 + i * 0.1, type: "spring" }}
-                      className="w-12 h-12 rounded-full border-4 border-white shadow-lg"
-                      style={{
-                        backgroundImage: `url(https://i.pravatar.cc/100?img=${i + 20})`,
-                        backgroundSize: "cover",
-                      }}
-                    />
-                  ))}
-                </div>
-                <div>
-                  <div className="flex items-center gap-1 text-yellow-500 mb-1">
-                    {[...Array(5)].map((_, i) => (
-                      <motion.span
-                        key={i}
-                        initial={{ opacity: 0, scale: 0 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 1 + i * 0.1 }}
-                      >
-                        ★
-                      </motion.span>
-                    ))}
-                  </div>
-                  {/* <p className="text-sm font-semibold text-slate-700">
-                    Trusted by <span className="text-primary">15,000+</span> users worldwide
-                  </p> */}
-                </div>
-              </motion.div>
             </motion.div>
 
             {/* Right - 3D Floating Card System */}
@@ -341,45 +280,11 @@ export default function Landing() {
                   </div>
                 </motion.div>
 
-                {/* Floating Elements */}
-                <motion.div
-                  animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute -top-8 -right-8 z-20 bg-white/90 backdrop-blur-xl p-6 rounded-3xl shadow-2xl border border-white/50"
-                >
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-blue-100 rounded-xl">
-                      {/* <Zap className="w-5 h-5 text-blue-600" /> */}
-                    </div>
-                    <span className="font-bold text-slate-900">Instant Analysis</span>
-                  </div>
-                  <p className="text-sm text-slate-600">Results in &lt;30 seconds</p>
-                </motion.div>
 
-                <motion.div
-                  animate={{ y: [0, 15, 0], rotate: [0, -5, 0] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                  className="absolute -bottom-6 -left-6 z-20 bg-white/90 backdrop-blur-xl p-6 rounded-3xl shadow-2xl border border-white/50"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-purple-100 rounded-xl">
-                      <CheckCircle2 className="w-5 h-5 text-purple-600" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-slate-900">98.5% Accuracy</p>
-                      <p className="text-xs text-slate-600">AI Verified</p>
-                    </div>
-                  </div>
-                </motion.div>
 
-                {/* Decorative Rings */}
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-                  className="absolute inset-0 -z-10"
-                >
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] border-2 border-dashed border-primary/20 rounded-full" />
-                </motion.div>
+
+
+
               </div>
             </motion.div>
           </div>
@@ -404,7 +309,7 @@ export default function Landing() {
             >
               Global Impact
             </motion.span>
-            <h2 className="text-5xl md:text-6xl font-display font-black mb-6 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 bg-clip-text text-transparent">
+            <h2 className="text-4xl md:text-5xl font-display font-black mb-6 text-emerald-600">
               Why It Matters
             </h2>
             <p className="text-xl text-slate-600 max-w-3xl mx-auto">
@@ -413,28 +318,20 @@ export default function Landing() {
             </p>
           </motion.div>
 
+
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                icon: Globe,
                 title: "Global Coverage",
-                desc: "Monitor air quality anywhere on Earth without expensive sensor infrastructure.",
-                color: "from-blue-500 to-cyan-500",
-                bg: "from-blue-50 to-cyan-50",
+                desc: "Monitor air quality anywhere on Earth without expensive sensor infrastructure. Our AI models synthesize data from multiple satellite constellations.",
               },
               {
-                icon: Users,
                 title: "Crowd Intelligence",
-                desc: "Join 15,000+ contributors building the world's largest community air quality database.",
-                color: "from-purple-500 to-pink-500",
-                bg: "from-purple-50 to-pink-50",
+                desc: "Decentralized data collection creates a living map of global air quality. Every contribution improves the model's precision for everyone.",
               },
               {
-                icon: Zap,
                 title: "Instant Results",
-                desc: "Advanced computer vision delivers professional-grade analysis in under 2 seconds.",
-                color: "from-amber-500 to-orange-500",
-                bg: "from-amber-50 to-orange-50",
+                desc: "Advanced computer vision delivers professional-grade analysis in milliseconds. Real-time processing on the edge for immediate feedback.",
               },
             ].map((feature, i) => (
               <motion.div
@@ -443,20 +340,17 @@ export default function Landing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: i * 0.15 }}
-                whileHover={{ y: -12, scale: 1.02 }}
                 className="group relative"
               >
-                <div className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl blur-xl -z-10"
-                  style={{ backgroundImage: `linear-gradient(to bottom right, var(--tw-gradient-stops))` }}
-                />
-                <div className={`relative p-8 rounded-3xl bg-gradient-to-br ${feature.bg} border border-white/60 shadow-xl group-hover:shadow-2xl transition-all duration-500 h-full`}>
-                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
-                    <feature.icon className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4 text-slate-900 group-hover:text-primary transition-colors">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-teal-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative p-8 rounded-2xl bg-white/40 backdrop-blur-sm border border-slate-200/50 hover:border-primary/20 shadow-lg hover:shadow-xl transition-all duration-500 h-full overflow-hidden">
+                  <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                  <h3 className="text-xl font-display font-bold mb-4 text-slate-900 group-hover:text-primary transition-colors flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-primary/40 group-hover:bg-primary transition-colors" />
                     {feature.title}
                   </h3>
-                  <p className="text-slate-600 leading-relaxed">
+                  <p className="text-slate-600 leading-relaxed text-sm">
                     {feature.desc}
                   </p>
                 </div>
@@ -478,7 +372,7 @@ export default function Landing() {
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <h2 className="text-5xl md:text-6xl font-display font-black mb-12">
+              <h2 className="text-4xl md:text-5xl font-display font-black mb-12">
                 Traditional vs. <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">
                   VisionAQI
@@ -498,9 +392,9 @@ export default function Landing() {
                       <MapPin className="w-5 h-5 text-red-400" />
                     </div>
                     <div>
-                      <h4 className="font-bold mb-2 text-slate-300 text-3xl">Uses physical air quality sensors</h4>
-                      <h4 className="font-bold mb-2 text-slate-300 text-3xl">Measures pollutants like PM2.5, PM10, NO₂, SO₂</h4>
-                      <h4 className="font-bold mb-2 text-slate-300 text-3xl">Sensors are installed at fixed locations</h4>
+                      <h4 className="font-medium mb-1 text-slate-300 text-lg">Uses physical air quality sensors</h4>
+                      <h4 className="font-medium mb-1 text-slate-300 text-lg">Measures pollutants like PM2.5, PM10, NO₂, SO₂</h4>
+                      <h4 className="font-medium text-slate-300 text-lg">Sensors are installed at fixed locations</h4>
                     </div>
                   </div>
                 </motion.div>
@@ -522,9 +416,9 @@ export default function Landing() {
                       <CheckCircle2 className="w-6 h-6 text-emerald-300" />
                     </div>
                     <div>
-                      <h4 className="font-bold mb-2 text-slate-300 text-3xl">Applies computer vision + atmospheric physics</h4>
-                      <h4 className="font-bold mb-2 text-slate-300 text-3xl">Analyzes haze, contrast loss, and light scattering</h4>
-                      <h4 className="font-bold mb-2 text-slate-300 text-3xl">Estimates PM2.5 & AQI using AI models</h4>
+                      <h4 className="font-medium mb-1 text-slate-300 text-lg">Applies computer vision + atmospheric physics</h4>
+                      <h4 className="font-medium mb-1 text-slate-300 text-lg">Analyzes haze, contrast loss, and light scattering</h4>
+                      <h4 className="font-medium text-slate-300 text-lg">Estimates PM2.5 & AQI using AI models</h4>
                     </div>
                   </div>
                 </motion.div>
@@ -540,9 +434,9 @@ export default function Landing() {
             >
               <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-3xl blur-3xl opacity-20" />
               <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQTp--8sXvwqY7bKAkE2FYs4txcP4sloXqWA&s"
-                alt="Air Quality Index Map"
-                className="relative w-full h-auto max-h-[500px] object-contain rounded-3xl shadow-2xl border-4 border-white/10"
+                src="/indian_map_3d_aqi.png"
+                alt="3D AI Air Quality Map of India"
+                className="relative w-full h-auto max-h-[500px] object-contain rounded-3xl drop-shadow-2xl hover:scale-105 transition-transform duration-700"
               />
             </motion.div>
           </div>

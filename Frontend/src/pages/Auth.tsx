@@ -49,7 +49,7 @@ export default function Auth() {
               <div className="p-2 bg-white/20 backdrop-blur-sm rounded-xl">
                 <Wind className="w-8 h-8" />
               </div>
-              VisionAQ
+              VisionAQI
             </motion.div>
           </Link>
           <div>
@@ -81,7 +81,7 @@ export default function Auth() {
           className="w-full max-w-md"
         >
           <div className="mb-10 text-center lg:text-left">
-            <h1 className="text-4xl font-display font-black text-slate-900 mb-3">
+            <h1 className="text-4xl font-display font-black mb-3 text-emerald-600">
               {isLogin ? "Welcome back" : "Create account"}
             </h1>
             <p className="text-lg text-slate-600">
@@ -158,7 +158,10 @@ export default function Auth() {
               className="w-full bg-gradient-to-r from-primary via-emerald-600 to-teal-500 text-white py-4 rounded-xl font-bold text-lg shadow-xl shadow-primary/30 hover:shadow-2xl hover:shadow-primary/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-8"
             >
               {loading ? (
-                <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                <>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Loading...
+                </>
               ) : (
                 <>
                   {isLogin ? "Sign In" : "Create Account"}
@@ -185,11 +188,7 @@ export default function Auth() {
             </p>
           </div>
 
-          <div className="mt-8 pt-8 border-t border-slate-200 text-center">
-            <Link href="/" className="text-sm text-slate-500 hover:text-slate-900 transition-colors font-medium">
-              ← Back to Home
-            </Link>
-          </div>
+
         </motion.div>
       </div>
     </div>
