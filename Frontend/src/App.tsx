@@ -32,15 +32,18 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
 }
 
 function Router() {
+  const [location] = useLocation();
+  const isHomeOrAuth = location === "/" || location === "/auth";
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
       <Navigation />
-      <div className="flex-1 pt-16"> {/* pt-16 accounts for fixed navbar */}
+      <div className={`flex-1 ${!isHomeOrAuth ? "pt-16" : ""}`}>
         <Switch>
           <Route path="/" component={Landing} />
           <Route path="/auth" component={Auth} />
           <Route path="/how-it-works" component={HowItWorks} />
-          
+
           {/* Protected Routes */}
           <Route path="/dashboard">
             <ProtectedRoute component={Dashboard} />
@@ -54,11 +57,11 @@ function Router() {
           <Route path="/health">
             <ProtectedRoute component={Health} />
           </Route>
-          
+
           <Route component={NotFound} />
         </Switch>
       </div>
-      
+
       {/* Footer for all pages except Auth/Landing might be nicer here, but keeping it simple */}
       <footer className="py-8 text-center text-sm text-muted-foreground border-t border-border mt-auto">
         <p>© 2024 VisionAQ. AI-Powered Air Quality Monitoring.</p>
