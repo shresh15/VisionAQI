@@ -1,6 +1,7 @@
 import { useState, useEffect, createContext, useContext, ReactNode } from "react";
 import { useLocation } from "wouter";
 import { useToast } from "./use-toast";
+import { API_URL } from "../config";
 
 interface User {
   id: string;
@@ -19,7 +20,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const API_URL = "http://localhost:5000/api/auth";
+const AUTH_API_URL = `${API_URL}/api/auth`;
 
 export function AuthProvider({ children }: { children: ReactNode }): JSX.Element {
   const [user, setUser] = useState<User | null>(null);
@@ -37,7 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
       }
 
       try {
-        const response = await fetch(`${API_URL}/verify`, {
+        const response = await fetch(`${AUTH_API_URL}/verify`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -66,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
 
   const signup = async (name: string, email: string, password: string) => {
     try {
-      const response = await fetch(`${API_URL}/signup`, {
+      const response = await fetch(`${AUTH_API_URL}/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -102,7 +103,7 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await fetch(`${API_URL}/login`, {
+      const response = await fetch(`${AUTH_API_URL}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

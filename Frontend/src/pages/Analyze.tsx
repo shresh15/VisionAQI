@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Loader2, ArrowRight } from "lucide-react";
 import { useLocation } from "wouter";
 import { useLocalStorage } from "../hooks/use-local-storage";
+import { API_URL } from "../config";
 
 export default function Analyze() {
   const [file, setFile] = useState<File | null>(null);
@@ -20,9 +21,8 @@ export default function Analyze() {
       const formData = new FormData();
       formData.append("image", file);
 
-      // Use a relative path if proxy is set up or absolute localhost URL
-      // Assuming Vite proxy or CORS allows localhost:5000
-      const response = await fetch("http://localhost:5000/api/analyze", {
+      // Use central API URL
+      const response = await fetch(`${API_URL}/api/analyze`, {
         method: "POST",
         body: formData,
       });
