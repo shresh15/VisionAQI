@@ -64,6 +64,8 @@ aqi_model.eval()
 train_mean = torch.tensor([1.552576, 0.142549, 1.931332, 0.995442], device=device).float()
 train_std = torch.tensor([0.116868, 0.037032, 0.063219, 0.076424], device=device).float()
 
+import numpy as np
+
 
 
 
@@ -214,10 +216,16 @@ def verify_token(current_user):
 train_mean = torch.tensor([1.552576, 0.142549, 1.931332, 0.995442], device=device)
 train_std = torch.tensor([0.116868, 0.037032, 0.063219, 0.076424], device=device)
 
+# These are the same anchor points we used for your graph and dataset
+haze_x = np.array([1.0, 1.2, 1.4, 1.6, 1.8, 2.0])
+aqi_y  = np.array([15,  55,  110, 170, 280, 400])
+coeffs = np.polyfit(haze_x, aqi_y, 2)
+polynomial_model = np.poly1d(coeffs)
+
 @app.route('/api/analyze', methods=['POST'])
 def analyze_image():
-    if not aod_model or not aqi_model:
-        return jsonify({'error': 'AI models not loaded'}), 503
+    if not aod_model:
+        return jsonify({'error': 'AOD Model not loaded'}), 503
 
     file = request.files.get('image')
     if not file or file.filename == '':
@@ -227,7 +235,7 @@ def analyze_image():
     file.save(filepath)
 
     try:
-        # 1. Load and Quality Check
+        # 1. Load Image
         img = cv2.imread(filepath)
         if not is_day_image(img):
             os.remove(filepath)
@@ -237,57 +245,62 @@ def analyze_image():
         tensor_img = preprocess(img, device)
 
         with torch.no_grad():
+            # Extract K (Haze/Transmission related map) from your AOD-Net
             _, K = aod_model(tensor_img)
+            mean_haze = torch.mean(K).item()
 
-            # Extract features from K
-            m_h = torch.mean(K).item()
-            s_h = torch.std(K).item()
-            ma_h = torch.max(K).item()
-            mi_h = torch.min(K).item()
-            
-            raw_features = torch.tensor([[m_h, s_h, ma_h, mi_h]], dtype=torch.float32).to(device)
+        # 3. --- THE POLYNOMIAL REGRESSION FIX ---
+        # Instead of using a second 'aqi_model', use the math curve
+        raw_aqi = polynomial_model(mean_haze)
+        
+        # Clamp between 0 and 500 (Standard AQI Max)
+        estimated_aqi = np.clip(raw_aqi, 0, 500)
+        # ----------------------------------------
 
-            # Use the EXACT stats from your haze_aqi_dataset.csv
-           
+        # 4. Category Logic (EPA Standards)
+        if estimated_aqi <= 55:
+            category = "Good"
+            color = "#00e400"
+        elif estimated_aqi <= 110:
+            category = "Moderate"
+            color = "#ffff00"
+        elif estimated_aqi <= 170:
+            category = "Unhealthy for Sensitive Groups"
+            color = "#ff7e00"
+        elif estimated_aqi <= 280:
+            category = "Unhealthy"
+            color = "#ff0000"
+        elif estimated_aqi <= 400:
+            category = "Very Unhealthy"
+            color = "#8f3f97"
+        else:
+            category = "Hazardous"
+            color = "#7e0023"
 
-            norm_features = (raw_features - train_mean) / (train_std + 1e-6)
-            output = aqi_model(norm_features)
-            pred_norm = output.item()
-            
-            # --- THE CRITICAL FIX ---
-            # Multiply the 0-1 output by 500 to get the real AQI
-            estimated_aqi = pred_norm * 500.0
-            # ------------------------
-
-            # Clamp for safety
-            estimated_aqi = max(0, min(500, estimated_aqi))
-            # Predict
-            
-
-            
         # Cleanup
         if os.path.exists(filepath):
             os.remove(filepath)
 
-        # 7. Category Logic
-        category = "Good"
-        if estimated_aqi > 300: category = "Hazardous"
-        elif estimated_aqi > 200: category = "Very Unhealthy"
-        elif estimated_aqi > 150: category = "Unhealthy"
-        elif estimated_aqi > 100: category = "Unhealthy for Sensitive Groups"
-        elif estimated_aqi > 50: category = "Moderate"
-
         return jsonify({
             'status': 'success',
-            'aqi': round(estimated_aqi, 2),
-            'category': category
+            'aqi': round(float(estimated_aqi), 2),
+            'category': category,
+            'color': color,
+            'mean_haze': round(mean_haze, 4)
         })
 
     except Exception as e:
+
         if os.path.exists(filepath): os.remove(filepath)
+
         print(f"Error: {e}")
+
         return jsonify({'error': 'Analysis failed'}), 500
+
 if __name__ == '__main__':
+
     port = int(os.getenv('PORT', 5000))
+
     debug = os.getenv('FLASK_DEBUG', 'true').lower() == 'true'
+
     app.run(host='0.0.0.0', port=port, debug=debug)

@@ -28,7 +28,7 @@ export function Navigation() {
               <Wind className="h-6 w-6 text-primary" />
             </div>
             <span className="text-xl font-bold text-primary font-display tracking-tight">
-              VisionAQ
+              VisionAQI
             </span>
           </Link>
 
