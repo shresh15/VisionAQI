@@ -107,11 +107,11 @@ export default function Results() {
   </p>
 
 
-  <img
+  {/* <img
     src="https://visionaq-backend.onrender.com/static/calibration_curve.png"
     alt="Haze to AQI Calibration Curve"
     className="w-full rounded-xl border border-border"
-  />
+  /> */}
 
   <p className="text-xs text-muted-foreground mt-3 italic">
     Model calibrated using reference AQI ranges and atmospheric visibility theory.
