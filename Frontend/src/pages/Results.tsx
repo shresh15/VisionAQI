@@ -92,19 +92,19 @@ export default function Results() {
           </motion.div>
           {/* AQI Calibration Graph */}
 <motion.div
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ delay: 0.3 }}
-  className="bg-white p-6 rounded-2xl border border-border shadow-sm"
+  // initial={{ opacity: 0, y: 20 }}
+  // animate={{ opacity: 1, y: 0 }}
+  // transition={{ delay: 0.3 }}
+  // className="bg-white p-6 rounded-2xl border border-border shadow-sm"
 >
-  <h3 className="text-lg font-bold text-foreground mb-2">
+  {/* <h3 className="text-lg font-bold text-foreground mb-2">
     AQI Estimation Model
   </h3>
 
   <p className="text-sm text-muted-foreground mb-4">
     This graph shows how haze intensity extracted from the image is mapped
     to AQI values using a calibrated polynomial regression model.
-  </p>
+  </p> */}
 
 
   {/* <img
@@ -113,9 +113,9 @@ export default function Results() {
     className="w-full rounded-xl border border-border"
   /> */}
 
-  <p className="text-xs text-muted-foreground mt-3 italic">
+  {/* <p className="text-xs text-muted-foreground mt-3 italic">
     Model calibrated using reference AQI ranges and atmospheric visibility theory.
-  </p>
+  </p> */}
 </motion.div>
 
 
